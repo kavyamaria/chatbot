@@ -1,5 +1,6 @@
 import re
-from textblob import TextBlob
+#from textblob import TextBlob
+import random
 
 #later on, use encapsulation (define functions in another file, this file only has main script)
 
@@ -11,10 +12,7 @@ findTime(userInput) #returns a date struct
 findLocation(userInput) #returns string
 #esther
 
-#function to display events, if user says "display events" or "show events"
-displayEvents() #prints all the events, returns void
-#kria
-
+eventList = []
 #keep track of list of event objects- struct
     #within this object we have date objects
 #ria and kavya
@@ -30,19 +28,74 @@ displayEvents() #prints all the events, returns void
 #   month
 #   day number
 #   year
+class Date:
+
+    def __init__(self, time, dayOfTheWeek, month, dayNumber, year):
+        self.time = time #string object
+        self.dayOfTheWeek = dayOfTheWeek
+        self.month = month
+        self.dayNumber = dayNumber
+        self.year = year
+
+class Event:
+
+    def __init__(self, name, date, location):
+        self.name = name
+        self.date = date
+        self.location = location
+
+    #kria
+    #function to read input, say which parts of the event object still needs to be filled
+    def checkEvent(self):
+        if self.name == "":
+            return False
+        if self.date == None:
+            return False
+        if self.location == "":
+            return False
+        eventList.append(self)
+        return True
+
+#function to display events, if user says "display events" or "show events"
+def displayEvents(): #prints all the events, returns void
+    #kria
+    for i in range(0, len(eventList)):
+        e = eventList[i]
+        t = "{}, {} {}, {} at {}".format(e.date.dayOfTheWeek,
+            e.date.month, e.date.dayNumber, e.date.year, e.date.time)
+        s = "Event: {}\nDate: {}\nLocation: {}".format(e.name, t, e.location)
+        print(s)
 
 #on startup say hi i'm ur bish kevin
 hello() #returns void
 #shivali
 
-#function to read input, say which parts of the event object still needs to be filled
-checkEvent() #returns boolean
-#kria
-
+cannedResponses = ["It's a date!", "Sounds like a plan!", "Okay!", "Litty."]
+cannedResponses2 = ["Should I make an event for that?", "Would you like me to add that to the calendar?",
+    "Would you like me to create an event for that?"]
 #chatbot response- choose a response from a set of responses
 #eg "do you want me to set up an event at chipotle at 2?"
-response(Event) #returns void
-#kria
+def response(): #returns void
+    #kria
+    one = random.randint(0, 3)
+    two = random.randint(0, 2)
+    s = "{} {}".format(cannedResponses[one], cannedResponses2[two])
+    print(s)
+
+# stuff to test kria functions
+#d = Date("11:00", "Monday", "April", 25, 2017)
+#e = Event("Party!", d, "Joe's")
+#e.checkEvent()
+#d2 = Date("5:00pm", "Sunday", "July", 31, 2017)
+#e2 = Event("Pray", d2, "Presby")
+#e2.checkEvent()
+#d3 = Date("5:00pm", "Sunday", "July", 31, 2017)
+#e3 = Event("", d3, "Presby")
+#e3.checkEvent()
+#displayEvents()
+#response()
+#response()
+#response()
 
 #bye -> leave the while loop
 
