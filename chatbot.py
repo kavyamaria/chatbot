@@ -7,6 +7,8 @@ nltk_tagger = NLTKTagger()
 import random
 import sys
 
+hello()
+
 #later on, use encapsulation (define functions in another file, this file only has main script)
 
 #keep track of list of event objects- struct
@@ -143,7 +145,7 @@ def displayEvents(): #prints all the events, returns void
 
 #on startup say hi i'm ur bish kevin
 def hello(): #returns void
-    print 'hi'
+    print "Hi, my name is Kevin."
 #shivali
 
 cannedResponses = ["It's a date!", "Sounds like a plan!", "Okay!", "Litty."]
