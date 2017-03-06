@@ -1,55 +1,14 @@
 #https://x.ai/how-to-teach-a-machine-to-understand-us/
 #https://x.ai/a-peek-at-x-ais-data-science-architecture/
 import re
-#from textblob import TextBlob
+from textblob import TextBlob
+from textblob.taggers import NLTKTagger
+nltk_tagger = NLTKTagger()
 import random
 import sys
 
 #later on, use encapsulation (define functions in another file, this file only has main script)
 
-#regular expression for at and number, or days of the week, or months, or days of the month
-
-yearRe = '(\d\d\d\d)'
-monthRe = '(January|February|March|April|May|June|July|August|September|October|November|December)'
-timeRe = '(\d\d?)'
-dayRe = '(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)'
-dateRe = '(\d\d?)'
-timeRegex = '(' + dayRe + '\s*' + monthRe + '\s*' + dateRe + '\s*at\s*' + timeRe + ')'
-yearExp = re.compile(yearRe,  re.I)
-monthExp = re.compile(monthRe, re.I)
-timeExp = re.compile(timeRe, re.I)
-dayExp = re.compile(dayRe, re.I)
-dateExp = re.compile(dateRe, re.I)
-fullTimeExp = re.compile(timeRegex, re.I)
-
-def dateParse(dateString): #given a date string, returns a date object
-    month = re.search(monthExp, dateString)
-    time = re.search(timeExp, dateString)
-    
-    return Date(time, dayOfTheWeek, month, dayNumber, year)
-
-    #if you don't have all the stuff, ask for it again
-    #if you don't have all the stuff, such as date number, calculate it?
-    #wow look the datetime module has lots of date objects already
-
-def findTime(userInput): #returns a date struct, given an input string
-    match = re.search(timeExp, userInput)
-    if (match == None):
-        return None
-    d = dateParse(match)
-    return d
-
-#locations- textblob find noun
-def findLocation(userInput): #returns string
-    #a;lkshfaospigh
-
-def parseInput(userInput, time):
-    location = findLocation(userInput)
-    #write method to find name later
-    return Event("", time, location) 
-    #returns an event
-
-eventList = []
 #keep track of list of event objects- struct
     #within this object we have date objects
 #ria and kavya
@@ -83,15 +42,95 @@ class Event:
 
     #function to read input, say which parts of the event object still needs to be filled
     def checkEvent(self):
-        if self.name == "":
+        if (self.name == "") or (self.name == None):
             return False
         if self.date == None:
             return False
-        if self.location == "":
+        if (self.location == "") or (self.location == None):
             return False
         eventList.append(self)
         return True
 
+
+#regular expression for at and number, or days of the week, or months, or days of the month
+
+yearRe = '(\d\d\d\d)'
+monthRe = '(January|February|March|April|May|June|July|August|September|October|November|December)'
+timeRe = '(\d\d?)'
+dayRe = '(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)'
+dateRe = '(\d\d?)'
+timeRegex = '(' + dayRe + '?\s*' + monthRe + '?\s*' + dateRe + '?\s*' + yearRe +  '?\s*at\s*' + timeRe + '?)'
+yearExp = re.compile(yearRe,  re.I)
+monthExp = re.compile(monthRe, re.I)
+timeExp = re.compile(timeRe, re.I)
+dayExp = re.compile(dayRe, re.I)
+dateExp = re.compile(dateRe, re.I)
+fullTimeExp = re.compile(timeRegex, re.I)
+
+detectTimeRegex = '(([Oo]n.*)?at\s\d*)'
+detectTimeExp = re.compile(detectTimeRegex, re.I)
+
+def maxLengthWord(matches):
+    for line in matches: #print out all found dates
+        maxword = ''
+        for x in line:  #since the regular expressions contain multiple groups, findall() returns multiple groups for each date. We print only the longest one.
+            if (len(x) > len(maxword)):
+                maxword = x
+        return maxword
+
+def dateParse(dateString): #given a date string, returns a date object
+#    dateString = maxLengthWord(dateString)
+#    print dateString
+    
+    time = re.search(timeExp, dateString)
+    if time:
+        time = time.group(0)
+    dayOfTheWeek = re.search(dayExp, dateString)
+    if dayOfTheWeek:
+        dayOfTheWeek = dayOfTheWeek.group(0)
+    month = re.search(monthExp, dateString)
+    if month:
+        month = month.group(0)
+    dayNumber = re.search(dateExp, dateString)
+    if dayNumber:
+        dayNumber = dayNumber.group(0)
+    year = re.search(yearExp, dateString)
+    if year:
+        year = year.group(0)
+    
+    return Date(time, dayOfTheWeek, month, dayNumber, year)
+
+    #if you don't have all the stuff, ask for it again
+    #if you don't have all the stuff, such as date number, calculate it?
+    #wow look the datetime module has lots of date objects already
+
+def findTime(userInput): #returns a date struct, given an input string
+    match = re.findall(fullTimeExp, userInput)
+    match = maxLengthWord(match)
+    if (match == None):
+        return None
+    d = dateParse(match)
+    return d
+
+#locations- textblob find noun
+def findLocation(userInput): #returns string
+    #a;lkshfaospigh
+#    return None
+    blob = TextBlob(userInput)
+    for tags in blob.pos_tags:
+        if tags[1]==u'NN':
+            return tags[0]
+    #if len(nouns) > 0:
+    #    return nouns[0]
+    return None
+
+def parseInput(userInput, time):
+    location = findLocation(userInput)
+    #write method to find name later
+    return Event("", time, location) 
+    #returns an event
+
+eventList = []
 #function to display events, if user says "display events" or "show events"
 def displayEvents(): #prints all the events, returns void
     #kria
@@ -104,6 +143,7 @@ def displayEvents(): #prints all the events, returns void
 
 #on startup say hi i'm ur bish kevin
 def hello(): #returns void
+    print 'hi'
 #shivali
 
 cannedResponses = ["It's a date!", "Sounds like a plan!", "Okay!", "Litty."]
@@ -155,17 +195,20 @@ def cancelEvent(line):
 def bye():
     print 'kthxbai'
 
+def byeRequest(line):
+    return (line.upper().find("BYE") != -1)
+
 #SCRIPT: (shivesther)
 
 #say hi
 hello()
 
-exit = false
+exit = False
 #while (flag)
-while (!exit):
-
+while (not exit):
 #read user input
     line = raw_input()
+    time = findTime(line)
 #if user asks to display events, print the list of events
     if (displayRequest(line)):
         displayEvents()
@@ -173,27 +216,27 @@ while (!exit):
     elif (cancelRequest(line)):
         cancelEvent(line)
 #else if user mentions an event:
-    elif((time = findTime(line)) != None):
+    elif(time != None):
     #canned response
         answer = raw_input(response())
-        event = parseInput(line, time)
         if (answer.upper() == 'YES'):
-            while (!event.checkEvent): #maybe put this in the checkEvent function?
-                if self.name == "":
-                    self.name = raw_input('What is the event name?')
-                elif self.date == None: #this is not possible
-                    self.date = findTime(raw_input('When is this event happening?'))
-                elif self.location == "":
-                    self.location = findLocation(raw_input('Where is it happening?'))                #ask for the missing part
+            event = parseInput(line, time)
+            while (event.checkEvent() == False): #maybe put this in the checkEvent function?
+                if event.name == "" or event.name == None:
+                    event.name = raw_input('What is the event name?')
+                elif event.date == None: #this is not possible
+                    event.date = findTime(raw_input('When is this event happening?'))
+                elif event.location == "" or event.location == None:
+                    event.location = raw_input('Where is it happening?')                #ask for the missing part
         else:
             print 'ok...'
 
 #else if user says bye, change the flag
     elif (byeRequest(line)):
-        exit = false
+        exit = True
 
 #else if user says something irrelevent, bot asks "do you have any plans? ;)"
-    else
+    else:
         print "Do you have any plans? ;)"
 
 #end while
