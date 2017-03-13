@@ -7,8 +7,6 @@ nltk_tagger = NLTKTagger()
 import random
 import sys
 
-hello()
-
 #later on, use encapsulation (define functions in another file, this file only has main script)
 
 #keep track of list of event objects- struct
@@ -51,6 +49,7 @@ class Event:
         if (self.location == "") or (self.location == None):
             return False
         eventList.append(self)
+        print("Added!")   
         return True
 
 
@@ -83,7 +82,7 @@ def maxLengthWord(matches):
 def dateParse(dateString): #given a date string, returns a date object
 #    dateString = maxLengthWord(dateString)
 #    print dateString
-    
+
     time = re.search(timeExp, dateString)
     if time:
         time = time.group(0)
@@ -99,7 +98,7 @@ def dateParse(dateString): #given a date string, returns a date object
     year = re.search(yearExp, dateString)
     if year:
         year = year.group(0)
-    
+
     return Date(time, dayOfTheWeek, month, dayNumber, year)
 
     #if you don't have all the stuff, ask for it again
@@ -129,7 +128,7 @@ def findLocation(userInput): #returns string
 def parseInput(userInput, time):
     location = findLocation(userInput)
     #write method to find name later
-    return Event("", time, location) 
+    return Event("", time, location)
     #returns an event
 
 eventList = []
@@ -149,6 +148,16 @@ def hello(): #returns void
     print "Hi, my name is Kevin. What can I help you with?"
 #shivali
 
+def ynResponse(line):
+    s = ""
+    if line.upper().find("YES") != -1 or line.upper().find("Y") != -1:
+        s = "Tell me about them."
+    elif line.upper().find("NO") != -1 or line.upper().find("N") != -1:
+        s = "Life's not about staying indoors. Go make some plans!\n\nWell do you need anything?"
+    else:
+        s = "Um...K"
+    return s
+
 cannedResponses = ["It's a date!", "Sounds like a plan!", "Okay!", "Litty."]
 cannedResponses2 = ["Should I make an event for that?", "Would you like me to add that to the calendar?",
     "Would you like me to create an event for that?"]
@@ -158,7 +167,7 @@ def response(): #returns void
     #kria
     one = random.randint(0, 3)
     two = random.randint(0, 2)
-    s = "{} {}".format(cannedResponses[one], cannedResponses2[two])
+    s = "{} {}\n".format(cannedResponses[one], cannedResponses2[two])
     return s
 
 # stuff to test kria functions
@@ -192,7 +201,7 @@ def cancelEvent(line):
             eventList.remove(eventList[i]) #is this good syntax??
             return
     #if event is found, remove it
-    #if event isn't found, tough luck 
+    #if event isn't found, tough luck
 
 #bye -> leave the while loop
 def bye():
@@ -205,11 +214,16 @@ def byeRequest(line):
 
 #say hi
 hello()
-
+iterations = 0
+prompted = 0
 exit = False
 #while (flag)
 while (not exit):
 #read user input
+    if (iterations > 0 and prompted == 0):
+        print("I'm dumb Kevin. Let me try to help you more.")
+
+    prompted = 0
     line = raw_input()
     time = findTime(line)
 #if user asks to display events, print the list of events
@@ -218,7 +232,13 @@ while (not exit):
 #else if user asks to cancel events, remove it from the list
     elif (cancelRequest(line)):
         cancelEvent(line)
-#else if user mentions an event:
+    elif (line.upper().find("YES") != -1):
+            print("Tell me about them.")
+            prompted = 1
+    elif (line.upper().find("NO") != -1):
+            print("Life's not about staying indoors. Go make some plans!\n\nWell do you need anything?")
+            prompted = 1
+    #else if user mentions an event:
     elif(time != None):
     #canned response
         answer = raw_input(response())
@@ -226,11 +246,11 @@ while (not exit):
             event = parseInput(line, time)
             while (event.checkEvent() == False): #maybe put this in the checkEvent function?
                 if event.name == "" or event.name == None:
-                    event.name = raw_input('What is the event name?')
+                    event.name = raw_input('What is the event name?\n')
                 elif event.date == None: #this is not possible
-                    event.date = findTime(raw_input('When is this event happening?'))
+                    event.date = findTime(raw_input('When is this event happening?\n'))
                 elif event.location == "" or event.location == None:
-                    event.location = raw_input('Where is it happening?')                #ask for the missing part
+                    event.location = raw_input('Where is it happening?\n')                #ask for the missing part
         else:
             print 'ok...'
 
@@ -241,7 +261,13 @@ while (not exit):
 #else if user says something irrelevent, bot asks "do you have any plans? ;)"
     else:
         print "Do you have any plans? ;)"
+        #ynResponse(line)
 
+        #userResponse = raw_input("Do you have any plans ;)\n")
+        #ynResponse(userResponse)
+        prompted = 1
+
+    iterations += 1
 #end while
 
 bye()
