@@ -142,10 +142,11 @@ def displayEvents(): #prints all the events, returns void
             e.date.month, e.date.dayNumber, e.date.year, e.date.time)
         s = "Event: {}\nDate: {}\nLocation: {}".format(e.name, t, e.location)
         print(s)
+    return ""
 
 #on startup say hi i'm ur bish kevin
 def hello(): #returns void
-    print "Hi, my name is Kevin."
+    print "Hi, my name is Kevin. What can I help you with?"
 #shivali
 
 cannedResponses = ["It's a date!", "Sounds like a plan!", "Okay!", "Litty."]
@@ -158,7 +159,7 @@ def response(): #returns void
     one = random.randint(0, 3)
     two = random.randint(0, 2)
     s = "{} {}".format(cannedResponses[one], cannedResponses2[two])
-    print(s)
+    return s
 
 # stuff to test kria functions
 #d = Date("11:00", "Monday", "April", 25, 2017)
