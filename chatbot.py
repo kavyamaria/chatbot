@@ -1,5 +1,3 @@
-#https://x.ai/how-to-teach-a-machine-to-understand-us/
-#https://x.ai/a-peek-at-x-ais-data-science-architecture/
 import re
 from textblob import TextBlob
 from textblob.taggers import NLTKTagger
@@ -7,27 +5,10 @@ nltk_tagger = NLTKTagger()
 import random
 import sys
 
-#later on, use encapsulation (define functions in another file, this file only has main script)
-
-#keep track of list of event objects- struct
-    #within this object we have date objects
-#ria and kavya
-#class Eventz:
-#    name has a default value of "event"
-#    Date
-#    location
-#    people? (later)
-
-#class Date:
-#   time
-#   day of week
-#   month
-#   day number
-#   year
 class Date:
 
     def __init__(self, time, dayOfTheWeek, month, dayNumber, year):
-        self.time = time #string object
+        self.time = time #string
         self.dayOfTheWeek = dayOfTheWeek
         self.month = month
         self.dayNumber = dayNumber
@@ -72,17 +53,14 @@ detectTimeRegex = '(([Oo]n.*)?at\s\d*)'
 detectTimeExp = re.compile(detectTimeRegex, re.I)
 
 def maxLengthWord(matches):
-    for line in matches: #print out all found dates
+    for line in matches:
         maxword = ''
-        for x in line:  #since the regular expressions contain multiple groups, findall() returns multiple groups for each date. We print only the longest one.
+        for x in line: 
             if (len(x) > len(maxword)):
                 maxword = x
         return maxword
 
 def dateParse(dateString): #given a date string, returns a date object
-#    dateString = maxLengthWord(dateString)
-#    print dateString
-
     time = re.search(timeExp, dateString)
     if time:
         time = time.group(0)
@@ -100,10 +78,8 @@ def dateParse(dateString): #given a date string, returns a date object
         year = year.group(0)
 
     return Date(time, dayOfTheWeek, month, dayNumber, year)
-
     #if you don't have all the stuff, ask for it again
-    #if you don't have all the stuff, such as date number, calculate it?
-    #wow look the datetime module has lots of date objects already
+    #if you don't have all the stuff, such as date number, calculate it
 
 def findTime(userInput): #returns a date struct, given an input string
     match = re.findall(fullTimeExp, userInput)
@@ -115,15 +91,11 @@ def findTime(userInput): #returns a date struct, given an input string
 
 #locations- textblob find noun
 def findLocation(userInput): #returns string
-    #a;lkshfaospigh
-#    return None
     blob = TextBlob(userInput)
     for tags in blob.pos_tags:
         if tags[1]==u'NN':
             return tags[0]
-    #if len(nouns) > 0:
-    #    return nouns[0]
-    return None
+   return None
 
 def parseInput(userInput, time):
     location = findLocation(userInput)
@@ -133,8 +105,7 @@ def parseInput(userInput, time):
 
 eventList = []
 #function to display events, if user says "display events" or "show events"
-def displayEvents(): #prints all the events, returns void
-    #kria
+def displayEvents(): 
     for i in range(0, len(eventList)):
         e = eventList[i]
         t = "{}, {} {}, {} at {}".format(e.date.dayOfTheWeek,
@@ -143,10 +114,8 @@ def displayEvents(): #prints all the events, returns void
         print(s)
     return ""
 
-#on startup say hi i'm ur bish kevin
-def hello(): #returns void
+def hello():
     print "Hi, my name is Kevin. What can I help you with?"
-#shivali
 
 def ynResponse(line):
     s = ""
@@ -161,29 +130,12 @@ def ynResponse(line):
 cannedResponses = ["It's a date!", "Sounds like a plan!", "Okay!", "Litty."]
 cannedResponses2 = ["Should I make an event for that?", "Would you like me to add that to the calendar?",
     "Would you like me to create an event for that?"]
-#chatbot response- choose a response from a set of responses
-#eg "do you want me to set up an event at chipotle at 2?"
+
 def response(): #returns void
-    #kria
     one = random.randint(0, 3)
     two = random.randint(0, 2)
     s = "{} {}\n".format(cannedResponses[one], cannedResponses2[two])
     return s
-
-# stuff to test kria functions
-#d = Date("11:00", "Monday", "April", 25, 2017)
-#e = Event("Party!", d, "Joe's")
-#e.checkEvent()
-#d2 = Date("5:00pm", "Sunday", "July", 31, 2017)
-#e2 = Event("Pray", d2, "Presby")
-#e2.checkEvent()
-#d3 = Date("5:00pm", "Sunday", "July", 31, 2017)
-#e3 = Event("", d3, "Presby")
-#e3.checkEvent()
-#displayEvents()
-#response()
-#response()
-#response()
 
 def displayRequest(line):
     #check if the user asked to display events
@@ -198,46 +150,50 @@ def cancelEvent(line):
     eventName = raw_input("What is the name of the event you want to remove?")
     for i in range(len(eventList)):
         if (eventList[i].name == eventName):
-            eventList.remove(eventList[i]) #is this good syntax??
+            eventList.remove(eventList[i]) 
             return
     #if event is found, remove it
     #if event isn't found, tough luck
 
-#bye -> leave the while loop
 def bye():
-    print 'kthxbai'
+    print 'Thanks for sharing your plans with ya boi Kevin!'
 
 def byeRequest(line):
     return (line.upper().find("BYE") != -1)
 
-#SCRIPT: (shivesther)
-
 #say hi
 hello()
-iterations = 0
+firstIteration = True
 prompted = 0
 exit = False
-#while (flag)
+
 while (not exit):
+
 #read user input
-    if (iterations > 0 and prompted == 0):
+    if ((not firstIteration) and prompted == 0):
         print("I'm dumb Kevin. Let me try to help you more.")
+    firstIteration = False
 
     prompted = 0
     line = raw_input()
     time = findTime(line)
+
 #if user asks to display events, print the list of events
     if (displayRequest(line)):
         displayEvents()
+
 #else if user asks to cancel events, remove it from the list
     elif (cancelRequest(line)):
         cancelEvent(line)
+
+#if the user is answering whether they have plans
     elif (line.upper().find("YES") != -1):
             print("Tell me about them.")
             prompted = 1
     elif (line.upper().find("NO") != -1):
             print("Life's not about staying indoors. Go make some plans!\n\nWell do you need anything?")
             prompted = 1
+
     #else if user mentions an event:
     elif(time != None):
     #canned response
@@ -250,7 +206,8 @@ while (not exit):
                 elif event.date == None: #this is not possible
                     event.date = findTime(raw_input('When is this event happening?\n'))
                 elif event.location == "" or event.location == None:
-                    event.location = raw_input('Where is it happening?\n')                #ask for the missing part
+                    event.location = raw_input('Where is it happening?\n')
+                #ask for the missing part
         else:
             print 'ok...'
 
@@ -258,16 +215,12 @@ while (not exit):
     elif (byeRequest(line)):
         exit = True
 
-#else if user says something irrelevent, bot asks "do you have any plans? ;)"
+#else if user says something irrelevant, bot asks whether you have plans
     else:
         print "Do you have any plans? ;)"
-        #ynResponse(line)
+       prompted = 1
 
-        #userResponse = raw_input("Do you have any plans ;)\n")
-        #ynResponse(userResponse)
-        prompted = 1
 
-    iterations += 1
 #end while
 
 bye()
