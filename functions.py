@@ -114,7 +114,7 @@ months = ['January','February','March', 'April', 'May', 'June', 'July', 'August'
 def fillDate(date, line):
     text = ""
     # assuming user is smart enough not to say today & tomorrow in one line
-    if (line.upper().find("TODAY") != -1):
+    if (line.upper().find("TODAY") != -1 or line.upper().find("TONIGHT") != -1):
         text = "TODAY"
     if (line.upper().find("TOMORROW") != -1):
         text = "TOMORROW"
