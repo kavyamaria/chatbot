@@ -7,4 +7,4 @@ If you want to see what events you've made, type 'display'.
 If you want to cancel an event, type 'cancel' and you'll be subsequently asked which event you want to remove.
 
 Kevin isn't the brightest right now, but he's working on it.
-He still has a little trouble picking up dates & locations, but the event list part, he has got down!
+He still has a little trouble picking up & locations, but the event list part, he has got down!
