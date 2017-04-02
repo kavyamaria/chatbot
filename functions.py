@@ -1,4 +1,6 @@
 import re
+import time
+import calendar
 from textblob import TextBlob
 from textblob.taggers import NLTKTagger
 nltk_tagger = NLTKTagger()
@@ -7,8 +9,8 @@ import sys
 
 class Date:
 
-    def __init__(self, time, dayOfTheWeek, month, dayNumber, year):
-        self.time = time #string
+    def __init__(self, eventtime, dayOfTheWeek, month, dayNumber, year):
+        self.time = eventtime #string
         self.dayOfTheWeek = dayOfTheWeek
         self.month = month
         self.dayNumber = dayNumber
@@ -30,7 +32,7 @@ class Event:
         if (self.location == "") or (self.location == None):
             return False
         eventList.append(self)
-        print("Added!")   
+        print("Added!")
         return True
 
 
@@ -55,15 +57,15 @@ detectTimeExp = re.compile(detectTimeRegex, re.I)
 def maxLengthWord(matches):
     for line in matches:
         maxword = ''
-        for x in line: 
+        for x in line:
             if (len(x) > len(maxword)):
                 maxword = x
         return maxword
 
 def dateParse(dateString): #given a date string, returns a date object
-    time = re.search(timeExp, dateString)
-    if time:
-        time = time.group(0)
+    eventtime = re.search(timeExp, dateString)
+    if eventtime:
+        eventtime = eventtime.group(0)
     dayOfTheWeek = re.search(dayExp, dateString)
     if dayOfTheWeek:
         dayOfTheWeek = dayOfTheWeek.group(0)
@@ -77,7 +79,7 @@ def dateParse(dateString): #given a date string, returns a date object
     if year:
         year = year.group(0)
 
-    return Date(time, dayOfTheWeek, month, dayNumber, year)
+    return Date(eventtime, dayOfTheWeek, month, dayNumber, year)
     #if you don't have all the stuff, ask for it again
     #if you don't have all the stuff, such as date number, calculate it
 
@@ -107,9 +109,50 @@ def parseInput(userInput, time):
     return Event("", time, location)
     #returns an event
 
+weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+months = ['January','February','March', 'April', 'May', 'June', 'July', 'August','September', 'October','November','December']
+def fillDate(date, line):
+    text = ""
+    # assuming user is smart enough not to say today & tomorrow in one line
+    if (line.upper().find("TODAY") != -1):
+        text = "TODAY"
+    if (line.upper().find("TOMORROW") != -1):
+        text = "TOMORROW"
+    if (date.time == "" or date.time == None):
+        date.eventtime = raw_input("What time is the event?")
+    month = 0
+    if (text.upper() == 'TODAY' or text.upper() == 'TOMORROW'):
+        localtime = time.localtime( time.time() )
+        timez = localtime
+        date.year = timez.tm_year
+        month = timez.tm_mon
+        date.month = months[timez.tm_mon - 1]
+        date.dayNumber = timez.tm_mday
+        if (text.upper() == 'TOMORROW'):
+            # checks if today is the last day of the month
+            if (date.dayNumber == calendar.monthrange(date.year, timez.tm_mon)[0]):
+                date.dayNumber = 1
+                # updates the month & year as necessary
+                if (date.month == "December"):
+                    date.month = 'January'
+                    date.year = date.year + 1
+                else:
+                    date.month = months[timez.tm_mon]
+            else:
+                date.dayNumber = date.dayNumber + 1
+    else:
+        userinputdate = raw_input("What date is the event? (Enter in MM/DD/YYYY form)")
+        mon, day, year = userinputdate.split("/")
+        month = int(mon)
+        date.month = months[month - 1]
+        date.dayNumber = int(day)
+        date.year = int(year)
+    date.dayOfTheWeek = weekdays[calendar.weekday(date.year, month, date.dayNumber)]
+    return date
+
 eventList = []
 #function to display events, if user says "display events" or "show events"
-def displayEvents(): 
+def displayEvents():
     for i in range(0, len(eventList)):
         e = eventList[i]
         t = "{}, {} {}, {} at {}".format(e.date.dayOfTheWeek,
@@ -154,7 +197,7 @@ def cancelEvent(line):
     eventName = raw_input("What is the name of the event you want to remove?")
     for i in range(len(eventList)):
         if (eventList[i].name == eventName):
-            eventList.remove(eventList[i]) 
+            eventList.remove(eventList[i])
             return
     #if event is found, remove it
     #if event isn't found, tough luck
@@ -164,5 +207,3 @@ def bye():
 
 def byeRequest(line):
     return (line.find("BYE") != -1)
-
-
