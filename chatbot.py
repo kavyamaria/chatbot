@@ -53,7 +53,7 @@ while (not exit):
                 elif event.location == "" or event.location == None:
                     event.location = raw_input('Where is it happening?\n')
                 #ask for the missing part
-                event.date = fillDate(event.date, line)    
+            event.date = fillDate(event.date, line)    
         else:
             print 'ok...'
 
