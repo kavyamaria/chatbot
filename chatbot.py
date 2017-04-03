@@ -7,7 +7,7 @@ import random
 import sys
 
 #say hi
-hello()
+name = hello()
 firstIteration = True
 prompted = 0
 exit = False
@@ -16,7 +16,7 @@ while (not exit):
 
 #read user input and change to uppercase
     if ((not firstIteration) and prompted == 0):
-        print("I'm dumb Kevin. Let me try to help you more.")
+        print "I'm dumb Kevin. Let me try to help you more,", name,"."
     firstIteration = False
 
     prompted = 0
@@ -31,15 +31,18 @@ while (not exit):
     elif (cancelRequest(line)):
         cancelEvent(line)
 
+    elif (updateRequest(line)):
+        updateEvent(line)
+
 #if the user is answering whether they have plans
     elif (line.find("YES") != -1):
             print("Tell me about them.")
             prompted = 1
     elif (line.find("NO") != -1):
-            print("Life's not about staying indoors. Go make some plans!\n\nWell do you need anything?")
+            print"Life's not about staying indoors,",name, "! Go make some plans!\n\nWell do you need anything?"
             prompted = 1
 
-    #else if user mentions an event:
+#else if user mentions an event:
     elif(time != None):
     #canned response
         answer = raw_input(response())
@@ -63,7 +66,7 @@ while (not exit):
 
 #else if user says something irrelevant, bot asks whether you have plans
     else:
-        print "Do you have any plans? ;)"
+        print "Do you have any plans,",name, "? ;)"
         prompted = 1
 
 
