@@ -8,9 +8,9 @@ If you want to update an event you have already created, type 'update'.
 If you want to cancel an event, type 'cancel' and you'll be subsequently asked which event you want to remove.
 
 Kevin isn't the brightest right now, but he's working on it.
-He still has a little trouble picking up locations, but the event list part, he has got down!
+He still has a little trouble picking up times & locations, but the event list part, he has got down!
 
 Example inputs:
-  "Meeting tomorrow at 3pm"
+  "Meeting tomorrow"
   "Movie night Thursday at 6pm"
-  "Exam on April 27 at 8:15pm"
+  "Exam on April 27 at 7"

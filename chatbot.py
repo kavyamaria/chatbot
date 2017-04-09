@@ -22,6 +22,8 @@ while (not exit):
     prompted = 0
     line = raw_input().upper()
     time = findTime(line)
+    validInput = findAnything(line)
+
 
 #if user asks to display events, print the list of events
     if (displayRequest(line)):
@@ -43,20 +45,22 @@ while (not exit):
             prompted = 1
 
 #else if user mentions an event:
-    elif(time != None):
+    #elif(time != None):
+    elif (validInput == True):
     #canned response
         answer = raw_input(response())
         if (answer.upper() == 'YES'):
-            event = parseInput(line, time)
+            #event = parseInput(line, time)
+            event = Event(None, Date(None, None, None, None, None), None)
             while (event.checkEvent() == False): #maybe put this block in the checkEvent function?
                 if event.name == "" or event.name == None:
                     event.name = raw_input('What is the event name?\n')
-                elif event.date == None: #this is not possible
-                    event.date = findTime(raw_input('When is this event happening?\n'))
+                #elif event.date == None: #this is not possible
+                    #event.date = findTime(raw_input('When is this event happening?\n'))
                 elif event.location == "" or event.location == None:
                     event.location = raw_input('Where is it happening?\n')
                 #ask for the missing part
-            event.date = fillDate(event.date, line)    
+            event.date = fillDate(event.date, line)
         else:
             print 'ok...'
 

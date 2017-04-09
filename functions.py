@@ -27,8 +27,8 @@ class Event:
     def checkEvent(self):
         if (self.name == "") or (self.name == None):
             return False
-        if self.date == None:
-            return False
+        #if self.date == None:
+            #return False
         if (self.location == "") or (self.location == None):
             return False
         eventList.append(self)
@@ -92,6 +92,17 @@ def findTime(userInput): #returns a date struct, given an input string
         return None
     d = dateParse(match)
     return d
+
+def findAnything(line):
+    if (line.upper().find("TODAY") != -1 or line.upper().find("TONIGHT") != -1 or line.upper().find("TOMORROW") != -1):
+        return True
+    monthz = re.search(monthExp, line)
+    yearz = re.search(yearExp, line)
+    dayz = re.search(dayExp, line)
+    timez = re.search(timeEExp, line)
+    if monthz or yearz or dayz or timez:
+        return True
+    return False
 
 #locations- textblob find noun
 def findLocation(userInput): #returns string
