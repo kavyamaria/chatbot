@@ -41,6 +41,7 @@ class Event:
 yearRe = '(\d\d\d\d)'
 monthRe = '(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)'
 timeRe = '(\d\d?)'
+timeREE = '((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))'
 dayRe = '(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY)'
 dateRe = '(\d\d?)'
 timeRegex = '(' + dayRe + '?\s*' + monthRe + '?\s*' + dateRe + '?\s*' + yearRe +  '?\s*at\s*' + timeRe + '?)'
@@ -50,6 +51,7 @@ timeExp = re.compile(timeRe, re.I)
 dayExp = re.compile(dayRe, re.I)
 dateExp = re.compile(dateRe, re.I)
 fullTimeExp = re.compile(timeRegex, re.I)
+timeEExp = re.compile(timeREE, re.I)
 
 detectTimeRegex = '((ON.*'+dayRe+')?AT\s\d*)'
 detectTimeExp = re.compile(detectTimeRegex, re.I)
@@ -109,17 +111,15 @@ def parseInput(userInput, time):
     return Event("", time, location)
     #returns an event
 
-weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-months = ['January','February','March', 'April', 'May', 'June', 'July', 'August','September', 'October','November','December']
-def fillDate(date, line):
+weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+months = ['JANUARY','FEBRUARY','MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST','SEPTEMBER', 'OCTOBER','NOVEMBER','DECEMBER']
+
+def fillToday(date, line):
     text = ""
-    # assuming user is smart enough not to say today & tomorrow in one line
     if (line.upper().find("TODAY") != -1 or line.upper().find("TONIGHT") != -1):
         text = "TODAY"
     if (line.upper().find("TOMORROW") != -1):
         text = "TOMORROW"
-    if (date.time == "" or date.time == None):
-        date.eventtime = raw_input("What time is the event?")
     month = 0
     if (text.upper() == 'TODAY' or text.upper() == 'TOMORROW'):
         localtime = time.localtime( time.time() )
@@ -133,21 +133,64 @@ def fillDate(date, line):
             if (date.dayNumber == calendar.monthrange(date.year, timez.tm_mon)[0]):
                 date.dayNumber = 1
                 # updates the month & year as necessary
-                if (date.month == "December"):
-                    date.month = 'January'
+                if (date.month == "DECEMBER"):
+                    date.month = 'JANUARY'
                     date.year = date.year + 1
                 else:
                     date.month = months[timez.tm_mon]
             else:
                 date.dayNumber = date.dayNumber + 1
-    else:
+        date.dayOfTheWeek = weekdays[calendar.weekday(date.year, month, date.dayNumber)]
+    return date
+
+def fillDate(date, line):
+    date = fillToday(date, line)
+    monthz = re.search(monthExp, line)
+    yearz = re.search(yearExp, line)
+    dayz = re.search(dayExp, line)
+    timez = re.search(timeEExp, line)
+    datez = None
+    if monthz:
+        datez = re.search(dateExp, line) # assume user isnt going to give date without giving month
+    if date.month == None and monthz:
+        date.month = monthz.group(0)
+    if date.year == None and yearz:
+        date.year = int(yearz.group(0))
+    if datez != None:
+        temp = datez.group(0)
+        date.dayNumber = int(temp)
+    if dayz:
+        date.dayOfTheWeek = dayz.group(0)
+        localtime = time.localtime( time.time() )
+        timez = localtime
+        nummonth = timez.tm_mon
+        date.year = timez.tm_year
+        tempdayNumber = timez.tm_mday
+        tempdayOfTheWeek = weekdays[calendar.weekday(date.year, nummonth, tempdayNumber)]
+        while tempdayOfTheWeek != date.dayOfTheWeek:
+            tempdayNumber += 1
+            if (tempdayNumber == calendar.monthrange(date.year, timez.tm_mon)[0]):
+                tempdayNumber = 1
+                nummonth += 1
+                if (nummonth == 13):
+                    nummonth = 1
+                    date.year += 1
+            tempdayOfTheWeek = weekdays[calendar.weekday(date.year, nummonth, tempdayNumber)]
+        date.month = months[nummonth - 1]
+        date.dayOfTheWeek = tempdayOfTheWeek
+        date.dayNumber = int(tempdayNumber)
+    if date.year == None and date.month: # assume curr year
+        localtime = time.localtime( time.time() )
+        timez = localtime
+        date.year = timez.tm_year
+    if (date.month == None or date.year == None or date.dayNumber == None):
         userinputdate = raw_input("What date is the event? (Enter in MM/DD/YYYY form)\n")
         mon, day, year = userinputdate.split("/")
         month = int(mon)
         date.month = months[month - 1]
         date.dayNumber = int(day)
         date.year = int(year)
-    date.dayOfTheWeek = weekdays[calendar.weekday(date.year, month, date.dayNumber)]
+    date.dayOfTheWeek = weekdays[calendar.weekday(date.year, months.index(date.month) + 1, date.dayNumber)]
     return date
 
 eventList = []
@@ -225,7 +268,7 @@ def updateEvent(line):
         print "I'm sorry bro; I couldn't find this event. Try again."
     update = raw_input("Which part of this event do you want to update? Name, Time, or Location?\n")
     if (update.upper() == "NAME"):
-        eventList[count].name = raw_input("What is the new name?\n") 
+        eventList[count].name = raw_input("What is the new name?\n")
     elif (update.upper() == "TIME"):
         userinputdate = raw_input("What is the new date is the event? (Enter in MM/DD/YYYY form)\n")
         mon, day, year = userinputdate.split("/")
