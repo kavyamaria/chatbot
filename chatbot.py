@@ -50,8 +50,9 @@ while (not exit):
     #canned response
         answer = raw_input(response())
         if (answer.upper() == 'YES'):
-            #event = parseInput(line, time)
-            event = Event(None, Date(None, None, None, None, None), None)
+            event = parseInput(line, time)
+            #event = Event(None, Date(None, None, None, None, None), None)
+            event.date = Date(event.date.time, None, None, None, None)
             while (event.checkEvent() == False): #maybe put this block in the checkEvent function?
                 if event.name == "" or event.name == None:
                     event.name = raw_input('What is the event name?\n')
