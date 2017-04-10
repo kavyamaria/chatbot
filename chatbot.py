@@ -33,6 +33,7 @@ while (not exit):
     elif (cancelRequest(line)):
         cancelEvent(line)
 
+#else if user asks to update events, update an event's aspect
     elif (updateRequest(line)):
         updateEvent(line)
 
@@ -59,7 +60,7 @@ while (not exit):
                     event.name = raw_input('What is the event name?\n')
                 #elif event.date == None: #this is not possible
                     #event.date = findTime(raw_input('When is this event happening?\n'))
-                elif event.location == "" or event.location == None:
+                if event.location == "" or event.location == None:
                     event.location = raw_input('Where is it happening?\n')
                 #ask for the missing part
             event.date = fillDate(event.date, line)

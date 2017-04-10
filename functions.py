@@ -219,11 +219,11 @@ def displayEvents():
 #startup function, greetings and getting name
 def hello():
     name = raw_input("Hi, my name is Kevin. What's your name?\n")
-    print "Hi,", name, "What can I help you with?"
+    print "Hi,", name, "Do you have events to schedule?"
     userName = name
     return name
 
-def ynResponse(line):
+def yn(line):
     s = ""
     if line.upper().find("YES") != -1 or line.upper().find("Y") != -1:
         s = "Tell me about them."
@@ -277,10 +277,12 @@ def updateEvent(line):
         count+=1
     if (found == False):
         print "I'm sorry bro; I couldn't find this event. Try again."
-    update = raw_input("Which part of this event do you want to update? Name, Time, or Location?\n")
+    update = raw_input("Which part of this event do you want to update? Name, Date, Time, or Location?\n")
     if (update.upper() == "NAME"):
         eventList[count].name = raw_input("What is the new name?\n")
     elif (update.upper() == "TIME"):
+        print "I'm sorry bro, time is little tricky for me rn. Come back soon."
+    elif (update.upper() == "DATE"):
         userinputdate = raw_input("What is the new date is the event? (Enter in MM/DD/YYYY form)\n")
         mon, day, year = userinputdate.split("/")
         month = int(mon)
@@ -289,13 +291,13 @@ def updateEvent(line):
         eventList[count].date.year = int(year)
         eventList[count].date.dayOfTheWeek = weekdays[calendar.weekday(date.year, month, date.dayNumber)]
     elif (update.upper() == "LOCATION"):
-        eventList[count].location = raw_input("What is the new location?")
+        eventList[count].location = raw_input("What is the new location?\n")
     else: print "I'm sorry bro; I don't understand. Try again."
 
 
 
 def bye():
-    print "Thanks for sharing your plans with ya boi Kevin! BYE,", userName, "!!!"
+    print "Thanks for sharing your plans with ya boi Kevin! BYE, fraannnnd!!!"
 
 def byeRequest(line):
     return (line.find("BYE") != -1)
