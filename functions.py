@@ -51,7 +51,7 @@ timeExp = re.compile(timeRe, re.I)
 dayExp = re.compile(dayRe, re.I)
 dateExp = re.compile(dateRe, re.I)
 fullTimeExp = re.compile(timeRegex, re.I)
-timeEExp = re.compile(timeREE, re.I)
+timeEExp = re.compile(timeRe, re.I)
 
 detectTimeRegex = '((ON.*'+dayRe+')?AT\s\d*)'
 detectTimeExp = re.compile(detectTimeRegex, re.I)

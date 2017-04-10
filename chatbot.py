@@ -22,7 +22,7 @@ while (not exit):
     prompted = 0
     line = raw_input().upper()
     time = findTime(line)
-    validInput = findAnything(line)
+    validInput = findAnything(line) or time
 
 
 #if user asks to display events, print the list of events
@@ -52,7 +52,8 @@ while (not exit):
         if (answer.upper() == 'YES'):
             event = parseInput(line, time)
             #event = Event(None, Date(None, None, None, None, None), None)
-            event.date = Date(event.date.time, None, None, None, None)
+            event.date = Date(None, None, None, None, None)
+            if (time != None): event.date.time = time.time
             while (event.checkEvent() == False): #maybe put this block in the checkEvent function?
                 if event.name == "" or event.name == None:
                     event.name = raw_input('What is the event name?\n')
