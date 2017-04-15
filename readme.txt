@@ -7,10 +7,17 @@ If you want to see what events you've made, type 'display'.
 If you want to update an event you have already created, type 'update'.
 If you want to cancel an event, type 'cancel' and you'll be subsequently asked which event you want to remove.
 
+How to tell Kevin the time of your event:
+  Write time in HH:MM format followed by a space & "AM" or "PM"
+    ex. "07:00 PM"
+  Months and days of the week must be spelled out completely
+    ex. "April" or "Saturday"
+  It's not necessary to tell Kevin everything! Give whatever details you want to Kevin & if he needs more information, he'll ask you!
+
 Kevin isn't the brightest right now, but he's working on it.
-He still has a little trouble picking up times & locations, but the event list part, he has got down!
+He still has a little trouble picking up locations, but the event list part, he has got down!
 
 Example inputs:
   "Meeting tomorrow"
-  "Movie night Thursday at 6pm"
-  "Exam on April 27 at 7"
+  "Movie night Thursday at 06:00 PM"
+  "Exam on April 27 at 11:30 AM"

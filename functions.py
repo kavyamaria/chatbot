@@ -44,6 +44,7 @@ timeRe = '(\d\d?)'
 timeREE = '((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))'
 dayRe = '(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY)'
 dateRe = '(\d\d?)'
+hrminRe = '((0[0-9]|1[0-9]|2[0-3]):[0-5][0-9])'
 timeRegex = '(' + dayRe + '?\s*' + monthRe + '?\s*' + dateRe + '?\s*' + yearRe +  '?\s*at\s*' + timeRe + '?)'
 yearExp = re.compile(yearRe,  re.I)
 monthExp = re.compile(monthRe, re.I)
@@ -52,6 +53,7 @@ dayExp = re.compile(dayRe, re.I)
 dateExp = re.compile(dateRe, re.I)
 fullTimeExp = re.compile(timeRegex, re.I)
 timeEExp = re.compile(timeRe, re.I)
+hrminExp = re.compile(hrminRe, re.I)
 
 detectTimeRegex = '((ON.*'+dayRe+')?AT\s\d*)'
 detectTimeExp = re.compile(detectTimeRegex, re.I)
@@ -92,6 +94,19 @@ def findTime(userInput): #returns a date struct, given an input string
         return None
     d = dateParse(match)
     return d
+
+def searchForTime(userInput):
+    match = re.findall(r'\b\d{2}/\d{2}/\d{4}\b|\b\d{2}:\d{2}\b', userInput);
+    if not match:
+        return None
+    else:
+        end = ""
+        if (userInput.upper().find(" AM") != -1):
+            end = " AM"
+        if (userInput.upper().find(" PM") != -1):
+            end = " PM"
+        return match[0] + end
+
 
 def findAnything(line):
     if (line.upper().find("TODAY") != -1 or line.upper().find("TONIGHT") != -1 or line.upper().find("TOMORROW") != -1):
@@ -194,6 +209,9 @@ def fillDate(date, line):
         localtime = time.localtime( time.time() )
         timez = localtime
         date.year = timez.tm_year
+    if (date.time == None):
+        userinputtime = raw_input("What is the time of your event? (Enter in HH:MM AM/PM form)\n")
+        date.time = userinputtime
     if (date.month == None or date.year == None or date.dayNumber == None):
         userinputdate = raw_input("What date is the event? (Enter in MM/DD/YYYY form)\n")
         mon, day, year = userinputdate.split("/")
@@ -208,11 +226,12 @@ eventList = []
 userName = ""
 #function to display events, if user says "display events" or "show events"
 def displayEvents():
+    print("\nHere are the events you asked me to plan!\n")
     for i in range(0, len(eventList)):
         e = eventList[i]
         t = "{}, {} {}, {} at {}".format(e.date.dayOfTheWeek,
             e.date.month, e.date.dayNumber, e.date.year, e.date.time)
-        s = "Event: {}\nDate: {}\nLocation: {}".format(e.name, t, e.location)
+        s = "Event: {}\nDate: {}\nLocation: {}\n".format(e.name, t, e.location)
         print(s)
     return ""
 

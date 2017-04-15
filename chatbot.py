@@ -16,7 +16,7 @@ while (not exit):
 
 #read user input and change to uppercase
     if ((not firstIteration) and prompted == 0):
-        print "I'm dumb Kevin. Let me try to help you more,", name,"."
+        print "\nI'm dumb Kevin. Let me try to help you more,", name,"."
     firstIteration = False
 
     prompted = 0
@@ -54,7 +54,7 @@ while (not exit):
             event = parseInput(line, time)
             #event = Event(None, Date(None, None, None, None, None), None)
             event.date = Date(None, None, None, None, None)
-            if (time != None): event.date.time = time.time
+            event.date.time = searchForTime(line)
             while (event.checkEvent() == False): #maybe put this block in the checkEvent function?
                 if event.name == "" or event.name == None:
                     event.name = raw_input('What is the event name?\n')
