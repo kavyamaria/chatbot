@@ -121,7 +121,19 @@ def findAnything(line):
 
 #locations- textblob find noun
 def findLocation(userInput): #returns string
-    index = userInput.find('TO')
+    index = userInput.find('AT ')
+    if (index != -1):
+        wordList = re.sub("[^\w]", " ",  userInput).split()
+        found = False
+        for ind, word in enumerate(wordList):
+            word = wordList[ind]
+            if found:
+                return word.lower().capitalize()
+            if word == 'AT' and (wordList[ind+1].isdigit() == False):
+                found = True
+    else:
+        return None;
+    '''
     if (index != -1):
         blob = TextBlob(userInput[index:])
     else:
@@ -130,6 +142,7 @@ def findLocation(userInput): #returns string
         if tags[1]==u'NN':
             return tags[0]
     return None
+    '''
 
 def parseInput(userInput, time):
     location = findLocation(userInput)
@@ -238,7 +251,7 @@ def displayEvents():
 #startup function, greetings and getting name
 def hello():
     name = raw_input("Hi, my name is Kevin. What's your name?\n")
-    print "Hi,", name, "Do you have events to schedule?"
+    print "Hi,", name, ". Do you have events to schedule?"
     userName = name
     return name
 

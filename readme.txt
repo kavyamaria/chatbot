@@ -21,3 +21,7 @@ Example inputs:
   "Meeting tomorrow"
   "Movie night Thursday at 06:00 PM"
   "Exam on April 27 at 11:30 AM"
+
+How to make sure Kevin gets your event location:
+	You must use the word “at”
+	Location can only be one word.
