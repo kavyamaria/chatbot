@@ -55,6 +55,7 @@ while (not exit):
             #event = Event(None, Date(None, None, None, None, None), None)
             event.date = Date(None, None, None, None, None)
             event.date.time = searchForTime(line)
+            event.name = getEventName(event, line)
             while (event.checkEvent() == False): #maybe put this block in the checkEvent function?
                 if event.name == "" or event.name == None:
                     event.name = raw_input('What is the event name?\n')

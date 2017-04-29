@@ -14,14 +14,15 @@ How to tell Kevin the time of your event:
     ex. "April" or "Saturday"
   It's not necessary to tell Kevin everything! Give whatever details you want to Kevin & if he needs more information, he'll ask you!
 
+  How to make sure Kevin gets your event location:
+  	You must use the word “at”
+  	Location can only be one word.
+    Location cannot contain apostrophes
+
 Kevin isn't the brightest right now, but he's working on it.
 He still has a little trouble picking up locations, but the event list part, he has got down!
 
 Example inputs:
-  "Meeting tomorrow"
+  "Meeting tomorrow at Starbucks"
   "Movie night Thursday at 06:00 PM"
-  "Exam on April 27 at 11:30 AM"
-
-How to make sure Kevin gets your event location:
-	You must use the word “at”
-	Location can only be one word.
+  "Physics exam on April 27 at 11:30 AM at Loomis"

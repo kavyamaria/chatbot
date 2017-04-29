@@ -42,7 +42,7 @@ yearRe = '(\d\d\d\d)'
 monthRe = '(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)'
 timeRe = '(\d\d?)'
 timeREE = '((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))'
-dayRe = '(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY)'
+dayRe = '(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)'
 dateRe = '(\d\d?)'
 hrminRe = '((0[0-9]|1[0-9]|2[0-3]):[0-5][0-9])'
 timeRegex = '(' + dayRe + '?\s*' + monthRe + '?\s*' + dateRe + '?\s*' + yearRe +  '?\s*at\s*' + timeRe + '?)'
@@ -128,7 +128,8 @@ def findLocation(userInput): #returns string
         for ind, word in enumerate(wordList):
             word = wordList[ind]
             if found:
-                return word.lower().capitalize()
+                #return word.lower().capitalize()
+                return word
             if word == 'AT' and (wordList[ind+1].isdigit() == False):
                 found = True
     else:
@@ -152,6 +153,19 @@ def parseInput(userInput, time):
 
 weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 months = ['JANUARY','FEBRUARY','MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST','SEPTEMBER', 'OCTOBER','NOVEMBER','DECEMBER']
+fillerWords = ['TO', 'AT', 'AND', 'OR', 'NOT', 'THE', 'OF', 'FOR', 'A', 'AN', 'ARE', 'BE', 'AS', 'PM', 'AM', 'TONIGHT', 'TOMORROW', 'TODAY']
+
+def hasNumbers(line):
+    return any(char.isdigit() for char in line)
+
+def getEventName(event, line):
+    name = ""
+    wordList = line.split(" ");
+    for word in wordList:
+        if (word not in weekdays and word not in months and word not in fillerWords and not hasNumbers(word) and word != event.location):
+            if (name != ""): name += " "
+            name += word
+    return name
 
 def fillToday(date, line):
     text = ""
@@ -200,6 +214,7 @@ def fillDate(date, line):
         date.dayNumber = int(temp)
     if dayz:
         date.dayOfTheWeek = dayz.group(0)
+        print(date.dayOfTheWeek)
         localtime = time.localtime( time.time() )
         timez = localtime
         nummonth = timez.tm_mon
