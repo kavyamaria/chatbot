@@ -6,7 +6,7 @@ import calendar
 #nltk_tagger = NLTKTagger()
 import random
 import sys
-import sl4a 
+import sl4a
 
 #ADD A SPEAK AND PRINT
 
@@ -176,7 +176,7 @@ def parseInput(userInput, time):
 
 weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 months = ['JANUARY','FEBRUARY','MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST','SEPTEMBER', 'OCTOBER','NOVEMBER','DECEMBER']
-fillerWords = ['TO', 'AT', 'AND', 'OR', 'NOT', 'THE', 'OF', 'FOR', 'A', 'AN', 'ARE', 'BE', 'AS', 'PM', 'AM', 'TONIGHT', 'TOMORROW', 'TODAY']
+fillerWords = ['PM', 'AM', 'TONIGHT', 'TOMORROW', 'TODAY', 'MORNING', 'EVENING', 'AFTERNOON', 'NIGHT', 'AT', 'IN']
 
 def hasNumbers(line):
     return any(char.isdigit() for char in line)
@@ -370,4 +370,3 @@ def bye():
 
 def byeRequest(line):
     return (line.find("BYE") != -1)
-
