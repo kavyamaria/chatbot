@@ -8,6 +8,8 @@ import random
 import sys
 import sl4a 
 
+#ADD A SPEAK AND PRINT
+
 class Date:
 
     def __init__(self, eventtime, dayOfTheWeek, month, dayNumber, year):

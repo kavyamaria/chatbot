@@ -6,7 +6,7 @@ import re
 #nltk_tagger = NLTKTagger()
 import random
 import sys
-
+#ADDASPEAKANDPRINT
 
 
 #say hi
