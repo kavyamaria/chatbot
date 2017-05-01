@@ -1,5 +1,5 @@
 from functions3 import *
-from speech import *
+#from speech import *
 import re
 #from textblob import TextBlob
 #from textblob.taggers import NLTKTagger

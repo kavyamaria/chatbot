@@ -80,7 +80,6 @@ def listen(text):
     print(input)
     return input
 
-
 def maxLengthWord(matches):
     for line in matches:
         maxword = ''
@@ -132,6 +131,8 @@ def searchForTime(userInput):
 
 
 def findAnything(line):
+    if (line.upper().find(" AM") != -1 or line.upper().find(" PM") != -1):
+        return True
     if (line.upper().find("TODAY") != -1 or line.upper().find("TONIGHT") != -1 or line.upper().find("TOMORROW") != -1):
         return True
     monthz = re.search(monthExp, line)
@@ -144,7 +145,7 @@ def findAnything(line):
 
 #locations- textblob find noun
 def findLocation(userInput): #returns string
-    index = userInput.find('AT ')
+    index = userInput.find('IN') or userInput.find('AT ')
     if (index != -1):
         wordList = re.sub("[^\w]", " ",  userInput).split()
         found = False
@@ -292,6 +293,7 @@ def hello():
     name = listen("Hi, my name is Kevin. What's your name?\n")
     speak("Hi,"+name+". Do you have events to schedule?")
     userName = name
+
 def yn(line):
     s = ""
     if line.upper().find("YES") != -1 or line.upper().find("Y") != -1:
@@ -350,7 +352,8 @@ def updateEvent(line):
     if (update.upper() == "NAME"):
         eventList[count].name = listen("What is the new name?\n")
     elif (update.upper() == "TIME"):
-        speak("I'm sorry bro, time is little tricky for me rn. Come back soon.")
+        #speak("I'm sorry bro, time is little tricky for me rn. Come back soon.")
+        eventList[count].eventtime = listen("What's the new time?\n")
     elif (update.upper() == "DATE"):
         userinputdate = listen("What is the new date is the event? (Enter in MM/DD/YYYY form)\n")
         mon, day, year = userinputdate.split("/")
