@@ -1,5 +1,16 @@
-Meet Kevin, your personal planner!
+Meet Kevin, your personal voice-activated planner on Android!
 
+How to run Kevin:
+1. Download QPython3 (https://play.google.com/store/apps/details?id=org.qpython.qpy3&hl=en)
+2. Open the app > Editor > New > New ConsoleApp. Name the console app kevinbot.
+3. Copy and paste the code from chatbot3.py into a file called main.py
+4. New > New Script
+5. Name the script functions3.py. Copy and paste the code from functions3.py on this repo into this script.
+6. Save as > projects3 > kevinbot
+7. Go back to the main menu of the QPython app. Go to Programs > Projects > kevinbot > Run
+8. Have fun with Kevin!
+
+Usage details:
 When you run Kevin, he'll greet you and ask you for your name like a civilized chatbot. Tell him what you have planned (like 'meeting at 03:00 PM') and he'll add it to your calendar.
 If he asks you a yes or no question, answer 'yes' or 'no' (not just 'y' or 'n') because he doesn't understand slang.
 
