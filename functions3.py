@@ -8,8 +8,6 @@ import random
 import sys
 import sl4a
 
-#ADD A SPEAK AND PRINT
-
 class Date:
 
     def __init__(self, eventtime, dayOfTheWeek, month, dayNumber, year):
@@ -35,6 +33,7 @@ class Event:
         if (self.location == "") or (self.location == None):
             return False
         eventList.append(self)
+        print("Added!")
         speak("Added!")
         return True
 
@@ -65,20 +64,21 @@ detectTimeExp = re.compile(detectTimeRegex, re.I)
 droid = sl4a.Android()
 
 def speak(text):
-    print(text)
+    #print(text)
     time.sleep(2)
     droid.ttsSpeak(text)
     while droid.ttsIsSpeaking()[1] == True:
         time.sleep(1)
 
-def listen(text):
+def listen():
  #   time.sleep(2)
  #   speak(text)
-    time.sleep(2)
-    input = droid.recognizeSpeech("Kevin sucks",None,None)[1]
+#    time.sleep(2)
+    input = droid.recognizeSpeech("Speak Now",None,None)[1]
 
-    print(input)
+    #print(input)
     return input
+
 
 def maxLengthWord(matches):
     for line in matches:
@@ -131,7 +131,7 @@ def searchForTime(userInput):
 
 
 def findAnything(line):
-    if (line.upper().find(" AM") != -1 or line.upper().find(" PM") != -1):
+    if (line.upper().find(" A.M.") != -1 or line.upper().find(" P.M.") != -1):
         return True
     if (line.upper().find("TODAY") != -1 or line.upper().find("TONIGHT") != -1 or line.upper().find("TOMORROW") != -1):
         return True
@@ -145,7 +145,7 @@ def findAnything(line):
 
 #locations- textblob find noun
 def findLocation(userInput): #returns string
-    index = userInput.find('IN') or userInput.find('AT ')
+    index = userInput.find('AT ')
     if (index != -1):
         wordList = re.sub("[^\w]", " ",  userInput).split()
         found = False
@@ -177,13 +177,14 @@ def parseInput(userInput, time):
 
 weekdays = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 months = ['JANUARY','FEBRUARY','MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST','SEPTEMBER', 'OCTOBER','NOVEMBER','DECEMBER']
-fillerWords = ['PM', 'AM', 'TONIGHT', 'TOMORROW', 'TODAY', 'MORNING', 'EVENING', 'AFTERNOON', 'NIGHT', 'AT', 'IN']
+fillerWords =  ['P.M.', 'A.M.', 'TONIGHT', 'TOMORROW', 'TODAY', 'MORNING', 'EVENING', 'AFTERNOON', 'NIGHT', 'AT', 'IN']
 
 def hasNumbers(line):
     return any(char.isdigit() for char in line)
 
 def getEventName(event, line):
     name = ""
+    print(line)
     wordList = line.split(" ");
     for word in wordList:
         if (word not in weekdays and word not in months and word not in fillerWords and not hasNumbers(word) and word != event.location):
@@ -238,7 +239,8 @@ def fillDate(date, line):
         date.dayNumber = int(temp)
     if dayz:
         date.dayOfTheWeek = dayz.group(0)
-        speak(date.dayOfTheWeek)
+        #print(date.dayOfTheWeek)
+        #speak(date.dayOfTheWeek)
         localtime = time.localtime( time.time() )
         timez = localtime
         nummonth = timez.tm_mon
@@ -262,10 +264,14 @@ def fillDate(date, line):
         timez = localtime
         date.year = timez.tm_year
     if (date.time == None):
-        userinputtime = listen("What is the time of your event? (Enter in HH:MM AM/PM form)\n")
+        print("What is the time of your event? (Enter in HH:MM AM/PM form)\n")
+        speak("What is the time of your event? (Enter in HH:MM AM/PM form)\n")
+        userinputtime = listen()
         date.time = userinputtime
     if (date.month == None or date.year == None or date.dayNumber == None):
-        userinputdate = listen("What date is the event? (Enter in MM/DD/YYYY form)\n")
+        print("What date is the event? (Enter in MM/DD/YYYY form)\n")
+        speak("What date is the event? (Enter in MM/DD/YYYY form)\n")
+        userinputdate = listen()
         mon, day, year = userinputdate.split("/")
         month = int(mon)
         date.month = months[month - 1]
@@ -278,21 +284,26 @@ eventList = []
 userName = ""
 #function to display events, if user says "display events" or "show events"
 def displayEvents():
+    print("\nHere are the events you asked me to plan!\n")
     speak("\nHere are the events you asked me to plan!\n")
     for i in range(0, len(eventList)):
         e = eventList[i]
         t = "{}, {} {}, {} at {}".format(e.date.dayOfTheWeek,
             e.date.month, e.date.dayNumber, e.date.year, e.date.time)
         s = "Event: {}\nDate: {}\nLocation: {}\n".format(e.name, t, e.location)
+        print(s)
         speak(s)
     return ""
 
 #startup function, greetings and getting name
 def hello():
+    print ("Hi, my name is Kevin. What's your name?\n")
     speak("Hi, my name is Kevin. What's your name?\n")
-    name = listen("Hi, my name is Kevin. What's your name?\n")
+    name = listen()
+    print("Hi,"+name+". Do you have events to schedule?")
     speak("Hi,"+name+". Do you have events to schedule?")
     userName = name
+    return name
 
 def yn(line):
     s = ""
@@ -324,7 +335,10 @@ def cancelRequest(line):
 
 def cancelEvent(line):
     #iterate through event list
-    eventName = listen("What is the name of the event you want to remove?")
+    print("What is the name of the event you want to remove?")
+    speak("What is the name of the event you want to remove?")
+    eventName = listen().upper()
+    #print(eventName)
     for i in range(len(eventList)):
         if (eventList[i].name == eventName):
             eventList.remove(eventList[i])
@@ -340,22 +354,32 @@ def updateEvent(line):
     count = 0
     found = False
     #iterate through the event list
-    eventName = listen("What is the name of the event you want to update?\n")
+    print("What is the name of the event you want to update?\n")
+    speak("What is the name of the event you want to update?\n")
+    eventName = listen().upper()
     for i in range(len(eventList)):
         if (eventList[i].name == eventName):
             found = True
             break
         count+=1
     if (found == False):
+        print("I'm sorry bro; I couldn't find this event. Try again.")
         speak("I'm sorry bro; I couldn't find this event. Try again.")
-    update = listen("Which part of this event do you want to update? Name, Date, Time, or Location?\n")
+    print("Which part of this event do you want to update? Name, Date, Time, or Location?\n")
+    speak("Which part of this event do you want to update? Name, Date, Time, or Location?\n")
+    update = listen()
     if (update.upper() == "NAME"):
-        eventList[count].name = listen("What is the new name?\n")
+        print("What is the new name?\n")
+        speak("What is the new name?\n")
+        eventList[count].name = listen()
     elif (update.upper() == "TIME"):
-        #speak("I'm sorry bro, time is little tricky for me rn. Come back soon.")
-        eventList[count].eventtime = listen("What's the new time?\n")
+        print("What's the new time?\n")
+        speak("What's the new time?\n")
+        eventList[count].eventtime = listen()
     elif (update.upper() == "DATE"):
-        userinputdate = listen("What is the new date is the event? (Enter in MM/DD/YYYY form)\n")
+        print("What is the new date is the event? (Enter in MM/DD/YYYY form)\n")
+        speak("What is the new date is the event? (Enter in MM/DD/YYYY form)\n")
+        userinputdate = listen()
         mon, day, year = userinputdate.split("/")
         month = int(mon)
         eventList[count].date.month = months[month - 1]
@@ -363,13 +387,17 @@ def updateEvent(line):
         eventList[count].date.year = int(year)
         eventList[count].date.dayOfTheWeek = weekdays[calendar.weekday(date.year, month, date.dayNumber)]
     elif (update.upper() == "LOCATION"):
-        eventList[count].location = listen("What is the new location?\n")
-    else: speak("I'm sorry bro; I don't understand. Try again.")
-
+        print("What is the new location?\n")
+        speak("What is the new location?\n")
+        eventList[count].location = listen()
+    else:
+        print("I'm sorry bro; I don't understand. Try again.")
+        speak("I'm sorry bro; PLease I don't understand. Try again.")
 
 
 def bye():
-    speak("Thanks for sharing your plans with ya boi Kevin! BYE, fraannnnd!!!")
+    print("Thanks for sharing your plans")
+    speak("Thanks for sharing your plans with ya boi Kevin! BYE, friend Hey Now YOU'RE AN ALL-STAR!!!")
 
 def byeRequest(line):
-    return (line.find("BYE") != -1)
+    return (line.find("BY") != -1)
